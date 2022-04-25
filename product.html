@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
+    <title>Document</title>
+  </head>
+  <body class="container p-5">
+    <h1 class="mb-4">Product</h1>
+    <form>
+      <label class="form-label" for="title">Барааний нэр</label>
+      <input class="form-control" type="text" name="title" id="title" />
+      <label class="form-label" for="unitPrice">Зарах Үнэ</label>
+      <input class="form-control" type="text" name="unitPrice" id="unitPrice" />
+      <br /><br />
+      <input class="btn btn-dark" type="submit" value="Create Company" />
+    </form>
+    <table class="table table-striped mt-4">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Зарах үнэ</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <script>
+      const URL = "http://localhost:8000";
+      const title = document.querySelector("#title");
+      const unitPrice = document.querySelector("#unitPrice");
+      const form = document.querySelector("form");
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const myvar = {
+          title: title.value,
+          unitPrice: parseInt(unitPrice.value),
+        };
+        const res = await fetch(`${URL}/product`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(myvar),
+        });
+        document.querySelector("tbody").innerHTML = "";
+        getProduct();
+        console.log(await res.json());
+      });
+
+      async function getProduct() {
+        const res = await fetch(`${URL}/product`);
+        const result = await res.json();
+        for (let i = 0; i < result.length; i++) {
+          document.querySelector("tbody").innerHTML += `<tr>
+            <td>${result[i]["title"]}</td>
+            <td>${result[i]["unitPrice"]}</td>
+          </tr>`;
+        }
+      }
+      window.addEventListener("load", () => {
+        getProduct();
+      });
+    </script>
+  </body>
+</html>
